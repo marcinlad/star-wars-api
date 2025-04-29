@@ -1,0 +1,327 @@
+{
+  "openapi": "3.0.0",
+  "paths": {
+    "/health": {
+      "get": {
+        "operationId": "AppController_index",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Service is healthy",
+            "content": {
+              "application/json": {
+                "example": "ok"
+              }
+            }
+          }
+        },
+        "summary": "Check service health",
+        "tags": [
+          "app"
+        ]
+      }
+    },
+    "/characters": {
+      "get": {
+        "operationId": "CharactersController_getCharacters",
+        "parameters": [
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Limit for pagination",
+            "schema": {
+              "maximum": 100,
+              "default": 1,
+              "example": 5,
+              "type": "number"
+            }
+          },
+          {
+            "name": "offset",
+            "required": false,
+            "in": "query",
+            "description": "Offset for pagination",
+            "schema": {
+              "default": 0,
+              "example": 0,
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Characters retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Character"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No characters found"
+          }
+        },
+        "summary": "Get multiple characters by their IDs",
+        "tags": [
+          "characters"
+        ]
+      }
+    },
+    "/character/{id}": {
+      "get": {
+        "operationId": "CharactersController_getCharacter",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "Character ID",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Character retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Character"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid ID provided"
+          },
+          "404": {
+            "description": "Character not found"
+          }
+        },
+        "summary": "Get a single character by ID",
+        "tags": [
+          "characters"
+        ]
+      },
+      "patch": {
+        "operationId": "CharactersController_updateCharacter",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "Character ID",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "description": "Character data to update",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateCharacterDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Character updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UpdateCharacterDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request"
+          }
+        },
+        "summary": "Update a character by ID",
+        "tags": [
+          "characters"
+        ]
+      },
+      "delete": {
+        "operationId": "CharactersController_deleteCharacter",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "Character ID",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Character deleted successfully"
+          },
+          "400": {
+            "description": "Invalid ID provided"
+          },
+          "404": {
+            "description": "Character not found"
+          }
+        },
+        "summary": "Delete a character by ID",
+        "tags": [
+          "characters"
+        ]
+      }
+    },
+    "/character": {
+      "post": {
+        "operationId": "CharactersController_createCharacter",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "description": "Character data to create",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateCharacterDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Character created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateCharacterDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid character data"
+          }
+        },
+        "summary": "Create a new character",
+        "tags": [
+          "characters"
+        ]
+      }
+    }
+  },
+  "info": {
+    "title": "Star Wars API",
+    "description": "API for retrieving Star Wars characters",
+    "version": "1.0",
+    "contact": {}
+  },
+  "tags": [],
+  "servers": [],
+  "components": {
+    "schemas": {
+      "Character": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "number",
+            "description": "Unique identifier for the character",
+            "example": 1
+          },
+          "name": {
+            "type": "string",
+            "description": "Name of the character",
+            "example": "Luke Skywalker"
+          },
+          "episodes": {
+            "description": "Episodes the character appeared in",
+            "example": [
+              "NEWHOPE",
+              "EMPIRE",
+              "JEDI"
+            ],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "planet": {
+            "type": "string",
+            "example": "Tatooine"
+          }
+        },
+        "required": [
+          "name",
+          "episodes"
+        ]
+      },
+      "UpdateCharacterDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Name of the character",
+            "example": "Luke Skywalker"
+          },
+          "episodes": {
+            "description": "Episodes the character appeared in",
+            "example": [
+              "NEWHOPE",
+              "EMPIRE",
+              "JEDI"
+            ],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "planet": {
+            "type": "string",
+            "example": "Tatooine"
+          }
+        }
+      },
+      "CreateCharacterDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Name of the character",
+            "example": "Luke Skywalker"
+          },
+          "episodes": {
+            "description": "Episodes the character appeared in",
+            "example": [
+              "NEWHOPE",
+              "EMPIRE",
+              "JEDI"
+            ],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "planet": {
+            "type": "string",
+            "example": "Tatooine"
+          }
+        },
+        "required": [
+          "name",
+          "episodes"
+        ]
+      }
+    }
+  }
+}
